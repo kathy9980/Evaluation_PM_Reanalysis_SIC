@@ -14,8 +14,8 @@ URL: https://n5eil01u.ecs.nsidc.org/AMSA/AU_SI12.001/
 #from urllib.request import HTTPPasswordMgrWithDefaultRealm,HTTPBasicAuthHandler,build_opener
 #from urllib.error import URLError
 #
-#username='Kexin.Song'
-#password='Kathy-mao3gou4'
+#username='put your username'
+#password='put your password'
 #url='https://n5eil01u.ecs.nsidc.org/AMSA/AU_SI12.001/'
 #p = HTTPPasswordMgrWithDefaultRealm()
 #p.add_password(None,url,username,password)
