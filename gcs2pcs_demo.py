@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Program for gcs2pcs, remapping and interpolation
+Python script for gcs2pcs, remapping and interpolation
 Created on Wed Apr 10 10:34:27 2019
-@author: kathy
+@author: Kexin Song
 20190410 skx created from gcs2pcs_demo.ipynb
 20190410 skx saved grid_z.nc
 """
