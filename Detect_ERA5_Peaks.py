@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri May  3 08:44:15 2019
-Detect LCCA peaks by scipy.signal.find_peaks
-@author: kathy
+Detect LICI peaks uisng <scipy.signal.find_peaks>
+@author: Kexin Song
 
 20190610 skx add comments, apply to NT2/ASI products
 """
@@ -15,61 +15,60 @@ import pickle
 def ReadData(filename):
     pkl_file = open(filename, 'rb')
     data = pickle.load(pkl_file)
-    s_data = sorted(data.items(),key = lambda asd:asd[0])  # 字典排序
-    lcca = []  # 低密集度指数 LCCA = Low Concentration in Central Arctic
+    s_data = sorted(data.items(),key = lambda asd:asd[0])  # sort the dictionary
+    lici = []                                              # LICI means "Low Concentration in Central Arctic"
     dates = []
 #    for j in s_data: 
     for j in s_data[:136]: # AMSRE_NT2
-#        date = j[0]  # 获取日期
-#        date = j[0][-12:-4]  # 获取日期 AMSRE_NT2
-        date = j[0][-15:-7]  # 获取日期 ASI
+#        date = j[0]  
+#        date = j[0][-12:-4]  # access date AMSRE_NT2
+        date = j[0][-15:-7]  # access date ASI
         dates.append(dt.datetime.strptime(date,"%Y%m%d"))
-        lcca.append(j[1][2])
+        lici.append(j[1][2])
     pkl_file.close()
-    return dates, lcca
+    return dates, lici
 
 if __name__ == "__main__":
 
-#    FilePath = 'D:\\Newdata\\LCCA\\ERA5_75\\pkl\\'  # ERA5 LCCA
-#    FilePath = 'D:\\Newdata\\LCCA\\AMSRE_NT2_75\\pkl\\'  # AMSRE NT2 LCCA
-#    FilePath = 'D:\\Newdata\\LCCA\\AMSR2_NT2_75\\pkl\\'  # AMSR2 NT2 LCCA
-    FilePath = 'D:\\Newdata\\LCCA\\UB_ASI_75\\pkl\\'
+#    FilePath = 'D:\\Newdata\\LICI\\ERA5_75\\pkl\\'  # ERA5 LICI
+#    FilePath = 'D:\\Newdata\\LICI\\AMSRE_NT2_75\\pkl\\'  # AMSRE NT2 LICI
+#    FilePath = 'D:\\Newdata\\LICI\\AMSR2_NT2_75\\pkl\\'  # AMSR2 NT2 LICI
+    FilePath = 'D:\\Newdata\\LICI\\UB_ASI_75\\pkl\\'
     
     SavePath = 'D:\\Newplot\\' 
     
     year = np.arange(2002,2003,1)
     for i in year:
         filename = FilePath+str(i)+"_LowArea_PubHole_75.pkl"
-#     filename = FilePath+"2018_LowArea_PubHole_75.pkl"
     
-        # Read LCCA data
-        Dates,LCCA = ReadData(filename)    
+        # Read LICI data
+        Dates,lici = ReadData(filename)    
 
-        # Detect LCCA Peaks
-        p_ind,_ = find_peaks(LCCA,height=5,distance=7)
+        # Detect LICI Peaks
+        p_ind,_ = find_peaks(lici,height=5,distance=7)
         
         ''' Save Peaks info in .txt file '''
-        f = open(SavePath+str(i)+'_LCCA_Peak_ERA5.txt','w')
+        f = open(SavePath+str(i)+'_lici_Peak_ERA5.txt','w')
         
         for j in range (len(p_ind)):
             ind = p_ind[j]
-            f.write('%10s %.2f'%(Dates[ind].date(),LCCA[ind]))
+            f.write('%10s %.2f'%(Dates[ind].date(),lici[ind]))
             f.write('\n')
-            print('%10s %f'%(Dates[ind].date(),LCCA[ind]))  # 输出：日期 峰值
+            print('%10s %f'%(Dates[ind].date(),lici[ind]))  # ouputs：date, peak LICI value
         f.write('\n')
         print('\n')  
         f.close()
 
-        ''' Plot LCCA with peaks '''
-        LCCA = np.array(LCCA)    
+        ''' Plot lici with peaks '''
+        lici = np.array(lici)    
         Dates = np.array(Dates)
         
         import matplotlib.pyplot as plt
         
-#        plt.plot(Dates,LCCA,'seagreen',label='ERA 5')
-#        plt.plot(Dates,LCCA,'magenta',label='NT2')
-        plt.plot(Dates,LCCA,'blue',label='ASI')
-        plt.plot(Dates[p_ind],LCCA[p_ind],"*",color="purple",label="Peaks")
+#        plt.plot(Dates,lici,'seagreen',label='ERA 5')
+#        plt.plot(Dates,lici,'magenta',label='NT2')
+        plt.plot(Dates,lici,'blue',label='ASI')
+        plt.plot(Dates[p_ind],lici[p_ind],"*",color="purple",label="Peaks")
         
         
         ''' only work for NT2 year 2012 '''
@@ -83,18 +82,16 @@ if __name__ == "__main__":
             plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))  # 只显示月份
         ''' only work for missing data years '''
         
-        
-        
         plt.ylim(-1,65)
         
         plt.legend(loc=2)
         
         plt.xlabel("Time",fontsize=16)
-        plt.ylabel("LCCA Index (%)",fontsize=16)
+        plt.ylabel("lici Index (%)",fontsize=16)
 
         plt.show()
-#        plt.savefig(SavePath+str(i)+'_LCCA_Peak_ERA5.jpg')
-        plt.savefig(SavePath+str(i)+'_LCCA_Peak_NT2.jpg')
+#        plt.savefig(SavePath+str(i)+'_lici_Peak_ERA5.jpg')
+        plt.savefig(SavePath+str(i)+'_lici_Peak_NT2.jpg')
         plt.close()
     
     print("finished")
